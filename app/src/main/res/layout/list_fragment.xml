@@ -24,4 +24,13 @@
         android:text="Name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/AlphabetButton"
+        android:layout_width="179dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="29dp"
+        android:text="Sort Alphabetically"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
