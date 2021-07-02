@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.List
+import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,8 +39,8 @@ class List : Fragment() {
 
     //variables
     var newGroceryName : String = ""
-    var newGroceryItem : GroceryItem = GroceryItem(food_name = "")
-    private var adapter = GroceryListAdapter()
+    var newGroceryItem : GroceryItem = GroceryItem("")
+    private lateinit var adapter:GroceryListAdapter
     private lateinit var model: MainViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var addButton: Button
@@ -53,38 +56,48 @@ class List : Fragment() {
         var view = inflater.inflate(R.layout.list_fragment, container, false)
 
         model = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        adapter = GroceryListAdapter(model.getGroceryList())
 
         recyclerView = view.findViewById(R.id.GroceryList)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
+//        adapter.setGroceries(model.getGroceryList())
 
-//        val addGrocery:EditText = view.findViewById(R.id.GroceryText)
+//        model.getGroceryList().observe(viewLifecycleOwner, Observer<ArrayList<GroceryItem>> {groceries ->
+//            groceries?.let {
+//                adapter.setGroceries(it)
+////                adapter.notifyDataSetChanged()
+////                model.getGroceryList().postValue(it)
+//            }
+//
+//        })
+
+
+        val addGrocery:EditText = view.findViewById(R.id.GroceryText)
 
         addButton = view.findViewById(R.id.addButton)
-        addButton.setOnClickListener (object:View.OnClickListener{
-            override fun onClick(v: View?) {
-                Log.d(TAG, "opening dialog")
-                openDialog()
-
-            }
-        })
+        addButton.setOnClickListener {
+            Log.d(TAG, "opening dialog")
+            openDialog()
+        }
 
 
         val sortButton:Button = view.findViewById(R.id.AlphabetButton)
 
-//        val newGrocery:String = addGrocery.text.trim().toString()
-
-//        addGrocery.setOnKeyListener(object:View.OnKeyListener{
-//            override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
-//                if (event?.action == KeyEvent.KEYCODE_ENTER || event?.action == KeyEvent.ACTION_DOWN)
-//                {
-//                    model.addToList(newGrocery)
-//                    return true
-//                }
-//                return false
-//            }
-//        })
+        addGrocery.setOnKeyListener(object:View.OnKeyListener{
+            override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
+                if (event?.action == KeyEvent.KEYCODE_ENTER || event?.action == KeyEvent.ACTION_DOWN)
+                {
+                    val newGrocery:GroceryItem = GroceryItem(addGrocery.text.trim().toString())
+                    model.addToList(newGrocery)
+                    adapter.setGroceries(model.getGroceryList())
+                    return true
+                }
+                addGrocery.text.clear()
+                return false
+            }
+        })
 
         sortButton.setOnClickListener(){
             adapter.sortAlphabetically()
@@ -109,9 +122,10 @@ class List : Fragment() {
             Log.d(TAG, "new grocery name: $newGroceryName")
 
 
-            newGroceryItem = GroceryItem(food_name = newGroceryName)
-            Log.d(TAG, "newGroceryItem: ${newGroceryItem.food_name}")
+            newGroceryItem = GroceryItem(newGroceryName)
+            Log.d(TAG, "newGroceryItem: ${newGroceryItem}")
             model.addToList(newGroceryItem)
+            adapter.setGroceries(model.getGroceryList())
 
         }
 
@@ -147,14 +161,14 @@ class List : Fragment() {
 
     }
 
-    inner class GroceryListAdapter() :
+    inner class GroceryListAdapter(private val dataSet:ArrayList<GroceryItem>) :
         RecyclerView.Adapter<GroceryListAdapter.GroceryViewHolder>() {
 
 
-        private var groceries = emptyList<GroceryItem>()
+         private var groceries = emptyList<GroceryItem>()
 
 
-        internal fun setMovies(groceries: List<GroceryItem>) {
+        internal fun setGroceries(groceries: List<GroceryItem>) {
 
             this.groceries = groceries
             notifyDataSetChanged()
@@ -169,14 +183,14 @@ class List : Fragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroceryViewHolder {
 
 
-            val v = LayoutInflater.from(parent.context).inflate(R.layout.list_fragment, parent, false)
+            val v = LayoutInflater.from(parent.context).inflate(R.layout.card_view, parent, false)
             return GroceryViewHolder(v)
         }
 
         fun filter(text: String): ArrayList<GroceryItem> {
             var list: ArrayList<GroceryItem> = ArrayList()
             for (item in groceries) {
-                if (item.food_name.toLowerCase(Locale.ROOT).contains(text.toLowerCase(Locale.ROOT))) {
+                if (item.foodName.toLowerCase(Locale.ROOT).contains(text.toLowerCase(Locale.ROOT))) {
                     list.add(item)
                 }
             }
@@ -185,24 +199,12 @@ class List : Fragment() {
 
         fun sortAlphabetically(): List<GroceryItem> {
             //return movies.sortedBy { it.title.toString() }
-            return groceries.sortedWith(compareBy { it.food_name })
+            return groceries.sortedWith(compareBy { it.foodName })
         }
 
         override fun onBindViewHolder(holder: GroceryViewHolder, position: Int) {
 
-
-            //holder.bindItems(movieList[position])
-
-//            Glide.with(this@ListFragment)
-//                .load(resources.getString(R.string.picture_base_url) + movies[position].poster_path)
-//                .apply(RequestOptions().override(128, 128))
-//                .into(holder.view.findViewById(R.id.poster))
-
-//            holder.view.findViewById<TextView>(R.id.title).text = movies[position].title
-//
-//            holder.view.findViewById<TextView>(R.id.rating).text =
-//                movies[position].vote_average.toString()
-
+            holder.view.findViewById<TextView>(R.id.FoodName).text = dataSet[position].foodName
 
             holder.itemView.setOnClickListener() {
                 // interact with the item
@@ -215,7 +217,7 @@ class List : Fragment() {
         inner class GroceryViewHolder(val view: View) : RecyclerView.ViewHolder(view),
             View.OnClickListener {
             override fun onClick(view: View?) {
-
+                view?.findNavController()?.navigate(R.id.action_list_to_details)
             }
 
 
