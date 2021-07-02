@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
 
-    private var groceryList = MutableLiveData<ArrayList<String>>()//change back to grovery item
+    private var groceryList = MutableLiveData<ArrayList<GroceryItem>>()//change back to grovery item
 
-    fun addToList(item: String)
+    fun addToList(item: GroceryItem)
     {
         groceryList.value?.add(item)
     }

@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-android'
 }
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 30
@@ -55,4 +56,9 @@ dependencies {
     kapt 'androidx.room:room-compiler:2.2.4'
     kapt 'androidx.room:room-testing:2.2.4'
     testImplementation 'androidx.room:room-testing:2.1.0-alpha04'
+
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:28.2.0')
+    // Declare the dependency for the Firebase SDK for Google Analytics
+    implementation 'com.google.firebase:firebase-analytics'
 }
