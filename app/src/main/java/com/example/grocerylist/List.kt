@@ -185,6 +185,8 @@ class List : Fragment() {
 
             val v = LayoutInflater.from(parent.context).inflate(R.layout.card_view, parent, false)
             return GroceryViewHolder(v)
+
+
         }
 
         fun filter(text: String): ArrayList<GroceryItem> {
@@ -209,7 +211,16 @@ class List : Fragment() {
             holder.itemView.setOnClickListener() {
                 // interact with the item
                 holder.onClick(it)
+            }
 
+            holder.view.findViewById<Button>(R.id.remove).setOnClickListener {
+                dataSet.removeAt(position)
+                recyclerView.removeViewAt(position)
+                model.removeFromList(position)
+                adapter.notifyItemRemoved(position)
+                adapter.notifyItemRangeChanged(position, dataSet.size)
+                adapter.notifyDataSetChanged()
+                Log.d(TAG, "list: remove from list")
             }
 
         }

@@ -1,5 +1,7 @@
 package com.example.grocerylist
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.example.grocerylist.GroceryItem
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +17,12 @@ class MainViewModel : ViewModel() {
 
     fun getGroceryList(): ArrayList<GroceryItem> {
         return groceryList
+    }
+
+    fun removeFromList(position: Int) {
+
+        Log.d("Project", "model: remove from list; position = $position")
+        //groceryList.removeAt(position-1)
     }
 
 }
