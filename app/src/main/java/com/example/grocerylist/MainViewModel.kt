@@ -1,12 +1,12 @@
-package com.example.grocerylist.ui.main
+package com.example.grocerylist
 
-import GroceryItem
+import com.example.grocerylist.GroceryItem
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
 
-    private var groceryList = MutableLiveData<ArrayList<GroceryItem>>()
+    private var groceryList = MutableLiveData<ArrayList<String>>()//change back to grovery item
 
     fun addToList(item: String)
     {

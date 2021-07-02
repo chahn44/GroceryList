@@ -3,20 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/list">
 
-    <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.example.grocerylist.ui.main.MainFragment"
-        android:label="main_fragment"
-        tools:layout="@layout/list_fragment" >
-        <action
-            android:id="@+id/action_mainFragment_to_details"
-            app:destination="@id/details" />
-    </fragment>
     <fragment
         android:id="@+id/details"
         android:name="com.example.grocerylist.Details"
         android:label="fragment_details"
         tools:layout="@layout/fragment_details" />
+    <fragment
+        android:id="@+id/list"
+        android:name="com.example.grocerylist.List"
+        android:label="list_fragment"
+        tools:layout="@layout/list_fragment" >
+        <action
+            android:id="@+id/action_list_to_details"
+            app:destination="@id/details" />
+    </fragment>
 </navigation>

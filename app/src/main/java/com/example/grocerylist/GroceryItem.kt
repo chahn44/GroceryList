@@ -1,3 +1,5 @@
+package com.example.grocerylist
+
 import android.widget.ImageView
 import androidx.room.ColumnInfo
 import androidx.room.Entity
