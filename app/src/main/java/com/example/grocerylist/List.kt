@@ -1,6 +1,11 @@
 package com.example.grocerylist
 
+import android.app.AlertDialog
+import android.content.ContentValues.TAG
+import android.content.DialogInterface
 import android.os.Bundle
+import android.text.InputType
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -27,12 +32,15 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class List : Fragment() {
+    val TAG = "Proj"
 
     //variables
-    lateinit var newGrocery : GroceryItem
+    var newGroceryName : String = ""
+    var newGroceryItem : GroceryItem = GroceryItem(food_name = "")
     private var adapter = GroceryListAdapter()
     private lateinit var model: MainViewModel
     private lateinit var recyclerView: RecyclerView
+    private lateinit var addButton: Button
 
 
     override fun onCreateView(
@@ -40,33 +48,43 @@ class List : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+
         super.onCreateView(inflater, container, savedInstanceState)
         var view = inflater.inflate(R.layout.list_fragment, container, false)
 
-        val model = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        model = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         recyclerView = view.findViewById(R.id.GroceryList)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
 
-        val addGrocery:EditText = view.findViewById(R.id.GroceryText)
+//        val addGrocery:EditText = view.findViewById(R.id.GroceryText)
+
+        addButton = view.findViewById(R.id.addButton)
+        addButton.setOnClickListener (object:View.OnClickListener{
+            override fun onClick(v: View?) {
+                Log.d(TAG, "opening dialog")
+                openDialog()
+
+            }
+        })
+
 
         val sortButton:Button = view.findViewById(R.id.AlphabetButton)
 
+//        val newGrocery:String = addGrocery.text.trim().toString()
 
-        val newGrocery:String = addGrocery.text.trim().toString()
-
-        addGrocery.setOnKeyListener(object:View.OnKeyListener{
-            override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
-                if (event?.action == KeyEvent.KEYCODE_ENTER || event?.action == KeyEvent.ACTION_DOWN)
-                {
-                    model.addToList(newGrocery)
-                    return true
-                }
-                return false
-            }
-        })
+//        addGrocery.setOnKeyListener(object:View.OnKeyListener{
+//            override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
+//                if (event?.action == KeyEvent.KEYCODE_ENTER || event?.action == KeyEvent.ACTION_DOWN)
+//                {
+//                    model.addToList(newGrocery)
+//                    return true
+//                }
+//                return false
+//            }
+//        })
 
         sortButton.setOnClickListener(){
             adapter.sortAlphabetically()
@@ -75,7 +93,32 @@ class List : Fragment() {
         return view
     }
 
+    fun openDialog(){
+        val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(activity)
+        builder.setTitle("New Item")
 
+        //set up the input
+        val input = EditText(activity)
+        input.hint = "Item Name"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        builder.setView(input)
+
+        //set up buttons
+        builder.setPositiveButton("OK") { dialog, which ->
+            newGroceryName = input.text.toString()
+            Log.d(TAG, "new grocery name: $newGroceryName")
+
+
+            newGroceryItem = GroceryItem(food_name = newGroceryName)
+            Log.d(TAG, "newGroceryItem: ${newGroceryItem.food_name}")
+            model.addToList(newGroceryItem)
+
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+
+        builder.show()
+    }
 
 
     companion object {
