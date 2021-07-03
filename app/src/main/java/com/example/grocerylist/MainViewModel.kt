@@ -17,6 +17,7 @@ import kotlin.collections.ArrayList
 class MainViewModel : ViewModel() {
 
     private var groceryList = ArrayList<GroceryItem>()//change back to grocery item
+    private var selectedItem = GroceryItem(foodName = "")
 
     fun addToList(item: GroceryItem)
     {
@@ -43,6 +44,15 @@ class MainViewModel : ViewModel() {
             workDataOf("username" to MainActivity.USERNAME, "event" to event, "date" to "$date $time")
         )
             .build()).enqueue()
+    }
+
+    fun setSelectedItem(groceryItem: GroceryItem) {
+        selectedItem = groceryItem
+
+    }
+
+    fun getSelectedItem(): GroceryItem {
+        return selectedItem
     }
 
 }

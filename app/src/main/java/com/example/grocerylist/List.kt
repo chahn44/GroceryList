@@ -163,7 +163,6 @@ class List : Fragment() {
     }
 
 
-
     inner class GroceryListAdapter(private val dataSet:ArrayList<GroceryItem>) :
         RecyclerView.Adapter<GroceryListAdapter.GroceryViewHolder>() {
 
@@ -206,6 +205,7 @@ class List : Fragment() {
             holder.itemView.setOnClickListener() {
                 // interact with the item
                 model.appendEvent("Item clicked")
+                model.setSelectedItem(dataSet[position])
                 holder.onClick(it)
             }
 
@@ -220,6 +220,7 @@ class List : Fragment() {
                 Log.d(TAG, "list: remove from list")
             }
 
+
         }
 
         inner class GroceryViewHolder(val view: View) : RecyclerView.ViewHolder(view),
@@ -228,9 +229,6 @@ class List : Fragment() {
                 model.appendEvent("Recylcerview Item clicked (List clicked)")
                 view?.findNavController()?.navigate(R.id.action_list_to_details)
             }
-
-
-
 
         }
     }
