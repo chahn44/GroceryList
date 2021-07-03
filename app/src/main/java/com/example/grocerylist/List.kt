@@ -77,6 +77,7 @@ class List : Fragment() {
         val addGrocery:EditText = view.findViewById(R.id.GroceryText)
 
         addButton = view.findViewById(R.id.addButton)
+        model.appendEvent("Add button clicked")
         addButton.setOnClickListener {
             Log.d(TAG, "opening dialog")
             openDialog()
@@ -91,16 +92,22 @@ class List : Fragment() {
                 {
                     val newGrocery:GroceryItem = GroceryItem(addGrocery.text.trim().toString())
                     model.addToList(newGrocery)
+                    model.appendEvent("Item added to list")
                     adapter.setGroceries(model.getGroceryList())
+                    model.appendEvent("List updated")
                     return true
                 }
                 addGrocery.text.clear()
+                model.appendEvent("Keyboard down/Item entered")
                 return false
             }
         })
 
         sortButton.setOnClickListener(){
-            adapter.sortAlphabetically()
+//            adapter.sortAlphabetically(model.getGroceryList())
+            model.appendEvent("Sort button clicked")
+            adapter.setGroceries(adapter.sortAlphabetically())
+            adapter.notifyDataSetChanged()
         }
 
         return view
@@ -125,7 +132,9 @@ class List : Fragment() {
             newGroceryItem = GroceryItem(newGroceryName)
             Log.d(TAG, "newGroceryItem: ${newGroceryItem}")
             model.addToList(newGroceryItem)
+            model.appendEvent("Grocery Added to List")
             adapter.setGroceries(model.getGroceryList())
+            model.appendEvent("List updated")
 
         }
 
@@ -172,6 +181,7 @@ class List : Fragment() {
 
             this.groceries = groceries
             notifyDataSetChanged()
+            model.appendEvent("List updated")
         }
 
         override fun getItemCount(): Int {
@@ -189,19 +199,10 @@ class List : Fragment() {
 
         }
 
-        fun filter(text: String): ArrayList<GroceryItem> {
-            var list: ArrayList<GroceryItem> = ArrayList()
-            for (item in groceries) {
-                if (item.foodName.toLowerCase(Locale.ROOT).contains(text.toLowerCase(Locale.ROOT))) {
-                    list.add(item)
-                }
-            }
-            return list;
-        }
 
         fun sortAlphabetically(): List<GroceryItem> {
-            //return movies.sortedBy { it.title.toString() }
-            return groceries.sortedWith(compareBy { it.foodName })
+            model.appendEvent("List sorted by alphabet")
+            return groceries.sortedWith(compareBy { it.getFood() })
         }
 
         override fun onBindViewHolder(holder: GroceryViewHolder, position: Int) {
@@ -210,6 +211,7 @@ class List : Fragment() {
 
             holder.itemView.setOnClickListener() {
                 // interact with the item
+                model.appendEvent("Item clicked")
                 holder.onClick(it)
             }
 
@@ -220,6 +222,7 @@ class List : Fragment() {
                 adapter.notifyItemRemoved(position)
                 adapter.notifyItemRangeChanged(position, dataSet.size)
                 adapter.notifyDataSetChanged()
+                model.appendEvent("Grocery Removed from list")
                 Log.d(TAG, "list: remove from list")
             }
 
@@ -228,6 +231,7 @@ class List : Fragment() {
         inner class GroceryViewHolder(val view: View) : RecyclerView.ViewHolder(view),
             View.OnClickListener {
             override fun onClick(view: View?) {
+                model.appendEvent("Recylcerview Item clicked (List clicked)")
                 view?.findNavController()?.navigate(R.id.action_list_to_details)
             }
 
