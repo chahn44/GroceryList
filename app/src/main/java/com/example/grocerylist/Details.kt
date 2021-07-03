@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.lifecycle.ViewModelProviders
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,7 +25,11 @@ class Details : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_details, container, false)
+        val view =  inflater.inflate(R.layout.fragment_details, container, false)
+        val model = activity?.run{ViewModelProviders.of(this).
+            get(MainViewModel::class.java)}?:throw Exception("Invalid Activity")
+        view.findViewById<TextView>(R.id.foodName).text = this.arguments?.getString("food")
+        return view
     }
 
     companion object {

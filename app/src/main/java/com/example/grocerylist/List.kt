@@ -85,7 +85,7 @@ class List : Fragment() {
         }
 
 
-        val sortButton:Button = view.findViewById(R.id.AlphabetButton)
+        //val sortButton:Button = view.findViewById(R.id.AlphabetButton)
 
         addGrocery.setOnKeyListener(object:View.OnKeyListener{
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
@@ -104,12 +104,12 @@ class List : Fragment() {
             }
         })
 
-        sortButton.setOnClickListener(){
-//            adapter.sortAlphabetically(model.getGroceryList())
-            model.appendEvent("Sort button clicked")
-            adapter.setGroceries(adapter.sortAlphabetically())
-            adapter.notifyDataSetChanged()
-        }
+//        sortButton.setOnClickListener(){
+////            adapter.sortAlphabetically(model.getGroceryList())
+//            model.appendEvent("Sort button clicked")
+//            adapter.setGroceries(adapter.sortAlphabetically())
+//            adapter.notifyDataSetChanged()
+//        }
 
         return view
     }
