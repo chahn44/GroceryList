@@ -1,6 +1,8 @@
 package com.example.grocerylist
 
 import android.app.AlertDialog
+import android.content.ContentValues.TAG
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.List
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 
 
@@ -213,7 +216,7 @@ class List : Fragment() {
             holder.view.findViewById<Button>(R.id.remove).setOnClickListener {
                 dataSet.removeAt(position)
                 recyclerView.removeViewAt(position)
-                model.removeFromList(dataSet[position])
+                model.removeFromList(position)
                 adapter.notifyItemRemoved(position)
                 adapter.notifyItemRangeChanged(position, dataSet.size)
                 adapter.notifyDataSetChanged()
