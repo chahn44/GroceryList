@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -203,6 +204,8 @@ class List : Fragment() {
         fun sortAlphabetically(): List<GroceryItem> {
             model.appendEvent("List sorted by alphabet")
             return groceries.sortedWith(compareBy { it.getFood() })
+//            return groceries.sortedBy { it.foodName }
+//            return groceries.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, {it.foodName}))
         }
 
         override fun onBindViewHolder(holder: GroceryViewHolder, position: Int) {
@@ -232,7 +235,8 @@ class List : Fragment() {
             View.OnClickListener {
             override fun onClick(view: View?) {
                 model.appendEvent("Recylcerview Item clicked (List clicked)")
-                view?.findNavController()?.navigate(R.id.action_list_to_details)
+                view?.findNavController()?.navigate(R.id.action_list_to_details,
+                    bundleOf("food" to groceries.get(this.layoutPosition).foodName))
             }
 
 

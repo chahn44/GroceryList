@@ -27,6 +27,7 @@ class MainViewModel : ViewModel() {
         return groceryList
     }
 
+
     fun removeFromList(position: Int) {
 
         Log.d("Project", "model: remove from list; position = $position")
